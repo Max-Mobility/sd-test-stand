@@ -1,0 +1,13 @@
+This folder contains the EAGLE .sch/.brd files used to create the second version of the SmartDrive Test Stand cape. This cape incorporates a 4D LCD display adapter.
+
+
+
+Features:
+5V Power Regulation to supply BeagleBone Black, 4D LCD display, and on cape circuitry
+1 Low-side (n-channel MOSFET) coil driver for use with a solenoid
+1 Low-side (n-channel MOSFET) coil driver with current sense circuit for use with Magnetic Particle Brake
+1 5V Quadrature Encoder feedback circuit with A,B, and I signals.
+4D LCD display adapter circuit
+
+Known Issues:
+- EQEP0 cannot be configured outside of PRU mode. Fix: clip pins and jump to EQEP2

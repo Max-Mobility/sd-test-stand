@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2018-11-21T21:06:14Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.2.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "SmartDriveTestStand_SingleCape"
+        },
+        "Owner": "Ben Gasser <ben.gasser@permobil.com>",
+        "Size": {
+            "X": 86.36,
+            "Y": 88
+        }
+    }
+}

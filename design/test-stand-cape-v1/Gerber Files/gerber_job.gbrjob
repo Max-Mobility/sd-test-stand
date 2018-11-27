@@ -1,0 +1,13 @@
+G04 Gerber job file.*
+%TF.FileFunction,JobInfo*%
+%TF.GenerationSoftware,Autodesk,EAGLE,9.1.3*%
+%TF.CreationDate,2018-10-12T19:53:35Z*%
+%TF.Part,Single*%
+%MOMM*%
+%TJ.B_Owner,Ben Gasser <Ben.gasser@permobil.com>*%
+%TJ.B_ID,SmartDriveTestStand*%
+%TJ.B_LayerNum,2*%
+%TJ.B_Thickness,1.570000*%
+%TJ.B_Size_X,72.644000*%
+%TJ.B_Size_Y,54.610000*%
+M02*
