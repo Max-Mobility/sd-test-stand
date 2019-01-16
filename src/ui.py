@@ -4,6 +4,11 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QComboBox, QApplication, QMainWindow, QStyleFactory, QDesktopWidget, QMessageBox, QErrorMessage, QFileDialog, QSplitter, QScrollArea)
 from PyQt5.QtCore import QFileInfo, QFile, QProcess, QTimer, QBasicTimer, Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal
 
+import Adafruit_BBIO.GPIO as GPIO
+import Adafruit_BBIO.PWM as PWM
+import Adafruit_BBIO.ADC as ADC
+from Adafruit_BBIO.Encoder import RotaryEncoder, eQEP2
+
 import resource
 import pages
 from pager import Pager
