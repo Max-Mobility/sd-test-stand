@@ -36,7 +36,6 @@ class Programmer(QMainWindow):
         self.menubar_init()
         self.menubar_add_menu('&File')
         self.menu_add_action('&File', exitAction)
-        self.menu_add_action('&File', refreshAction)
         self.menu_add_action('&File', openAction)
 
         self.menubar_add_menu('&Help')
