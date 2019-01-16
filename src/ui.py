@@ -34,12 +34,6 @@ class Programmer(QMainWindow):
         aboutAction.setStatusTip('About SmartDrive Test Stand')
         aboutAction.triggered.connect(self.about)
 
-        # Create the widgets for the program (embeddable in the
-        # toolbar or elsewhere)
-        self.port_selector = QComboBox(self)
-        self.refreshPorts()
-        self.port_selector.activated[str].connect(self.changePort)
-
         # Set up the Menus for the program
         self.menubar_init()
         self.menubar_add_menu('&File')
