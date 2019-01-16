@@ -4,11 +4,6 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QComboBox, QApplication, QMainWindow, QStyleFactory, QDesktopWidget, QMessageBox, QErrorMessage, QFileDialog, QSplitter, QScrollArea)
 from PyQt5.QtCore import QFileInfo, QFile, QProcess, QTimer, QBasicTimer, Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal
 
-import Adafruit_BBIO.GPIO as GPIO
-import Adafruit_BBIO.PWM as PWM
-import Adafruit_BBIO.ADC as ADC
-from Adafruit_BBIO.Encoder import RotaryEncoder, eQEP2
-
 import resource
 import pages
 from pager import Pager
@@ -16,10 +11,37 @@ from pager import Pager
 from action import\
     Action
 
+import Adafruit_BBIO.GPIO as GPIO
+import Adafruit_BBIO.PWM as PWM
+import Adafruit_BBIO.ADC as ADC
+from Adafruit_BBIO.Encoder import RotaryEncoder, eQEP2
+
 class Programmer(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
+        self.initIO()
+
+    def initIO(self):
+        # set up eQEP2 encoder for position feedback
+        self.encoder = RotaryEncoder(eQEP2)
+        print('position', self.encoder.position)
+        self.encoder.zero()
+
+        # set up P8.13 PWM for Solenoid control
+        self.solenoidPWM = "P8_13"
+        PWM.start(self.solenoidPWM, 50)
+        PWM.set_duty_cycle(self.solenoidPWM, 10)
+        PWM.set_frequency(self.solenoidPWM, 1)
+
+        # set up P9.16 PWM for particle brake control
+        self.particlePWM = "P9_16"
+        PWM.start(self.particlePWM, 50)
+        PWM.set_duty_cycle(self.particlePWM, 50)
+        #PWM.set_frequency(self.particlePWM, 1)
+
+        PWM.stop(self.solenoidPWM)
+        PWM.stop(self.particlePWM)
 
     def initUI(self):
         QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
