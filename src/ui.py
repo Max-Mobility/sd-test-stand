@@ -36,7 +36,6 @@ class Programmer(QMainWindow):
         self.menubar_init()
         self.menubar_add_menu('&File')
         self.menu_add_action('&File', exitAction)
-        self.menu_add_action('&File', openAction)
 
         self.menubar_add_menu('&Help')
         self.menu_add_action('&Help', aboutAction)
@@ -96,7 +95,6 @@ This program walks the user through the testing process for the SmartDrive MX2+.
             QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            self.stop()
             event.accept()
         else:
             event.ignore()
