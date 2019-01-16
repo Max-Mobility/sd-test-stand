@@ -1,7 +1,10 @@
-# SD Programmer
+# SD Test Stand
 
-This repository contains the code for uploading bootloader and
-firmware to a MX2+ system.
+This repository contains the code for testing a SmartDrive MX2+ system.
+
+This software uses the [Adafruit_BBIO
+library](https://github.com/adafruit/adafruit-beaglebone-io-python)
+which provides convenient interfaces to the BBB IO from python.
 
 ## Creating the Executable
 
