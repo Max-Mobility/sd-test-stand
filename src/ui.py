@@ -25,20 +25,22 @@ class Programmer(QMainWindow):
     def initIO(self):
         # set up eQEP2 encoder for position feedback
         self.encoder = RotaryEncoder(eQEP2)
-        print('position', self.encoder.position)
+        print('Encoder enabled  ', self.encoder.enabled)
+        print('Encoder frequency', self.encoder.frequency)
+        print('Encoder position ', self.encoder.position)
         self.encoder.zero()
 
         # set up P8.13 PWM for Solenoid control
         self.solenoidPWM = "P8_13"
-        PWM.start(self.solenoidPWM, 50)
-        PWM.set_duty_cycle(self.solenoidPWM, 10)
-        PWM.set_frequency(self.solenoidPWM, 1)
+        PWM.start(self.solenoidPWM, 10, 1, 0)
 
         # set up P9.16 PWM for particle brake control
         self.particlePWM = "P9_16"
-        PWM.start(self.particlePWM, 50)
-        PWM.set_duty_cycle(self.particlePWM, 50)
-        #PWM.set_frequency(self.particlePWM, 1)
+        PWM.start(self.particlePWM, 50, 2000, 0)
+
+        # set up PX.YY ADC for particle brake current reading
+        self.particleADC = "P9_36"
+        ADC.setup()
 
     def initUI(self):
         QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
