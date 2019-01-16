@@ -40,9 +40,6 @@ class Programmer(QMainWindow):
         PWM.set_duty_cycle(self.particlePWM, 50)
         #PWM.set_frequency(self.particlePWM, 1)
 
-        PWM.stop(self.solenoidPWM)
-        PWM.stop(self.particlePWM)
-
     def initUI(self):
         QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
 
@@ -123,6 +120,7 @@ This program walks the user through the testing process for the SmartDrive MX2+.
 
         if reply == QMessageBox.Yes:
             event.accept()
+            PWM.cleanup()
         else:
             event.ignore()
 
