@@ -32,15 +32,17 @@ class Programmer(QMainWindow):
 
         # set up P8.13 PWM for Solenoid control
         self.solenoidPWM = "P8_13"
-        PWM.start(self.solenoidPWM, 10, 1, 0)
+        #PWM.start(self.solenoidPWM, 10, 1, 0)
 
         # set up P9.16 PWM for particle brake control
         self.particlePWM = "P9_16"
-        PWM.start(self.particlePWM, 50, 2000, 0)
+        #PWM.start(self.particlePWM, 30, 2000, 0)
 
         # set up PX.YY ADC for particle brake current reading
         self.particleADC = "P9_36"
         ADC.setup()
+        sense = ADC.read(self.particleADC)
+        print('Particle current percentage:', sense)
 
     def initUI(self):
         QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
