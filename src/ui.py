@@ -2,7 +2,7 @@ import glob
 import sys
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QComboBox, QApplication, QMainWindow, QStyleFactory, QDesktopWidget, QMessageBox, QErrorMessage, QFileDialog, QSplitter, QScrollArea)
-from PyQt5.QtCore import QFileInfo, QFile, QProcess, QTimer, QBasicTimer, Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal
+from PyQt5.QtCore import QFileInfo, QFile, QProcess, QTimer, QBasicTimer, Qt, QObject, QRunnable, QThread, QThreadPool, pyqtSignal, pyqtSlot
 
 import resource
 import pages
@@ -17,32 +17,12 @@ import Adafruit_BBIO.ADC as ADC
 from Adafruit_BBIO.Encoder import RotaryEncoder, eQEP2
 
 class Programmer(QMainWindow):
+    readParticleLoad = pyqtSignal(float)
+
     def __init__(self):
         super().__init__()
         self.initUI()
         self.initIO()
-
-    def initIO(self):
-        # set up eQEP2 encoder for position feedback
-        self.encoder = RotaryEncoder(eQEP2)
-        print('Encoder enabled  ', self.encoder.enabled)
-        print('Encoder frequency', self.encoder.frequency)
-        print('Encoder position ', self.encoder.position)
-        self.encoder.zero()
-
-        # set up P8.13 PWM for Solenoid control
-        self.solenoidPWM = "P8_13"
-        #PWM.start(self.solenoidPWM, 10, 1, 0)
-
-        # set up P9.16 PWM for particle brake control
-        self.particlePWM = "P9_16"
-        #PWM.start(self.particlePWM, 30, 2000, 0)
-
-        # set up PX.YY ADC for particle brake current reading
-        self.particleADC = "P9_36"
-        ADC.setup()
-        sense = ADC.read(self.particleADC)
-        print('Particle current percentage:', sense)
 
     def initUI(self):
         QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
@@ -75,14 +55,12 @@ class Programmer(QMainWindow):
 
         # main UI
         self.startPage = pages.StartPage()
-        self.bootloaderPage = pages.BootloaderPage()
-        self.firmwarePage = pages.FirmwarePage()
+        self.testPage = pages.TestPage()
         self.endPage = pages.EndPage()
 
         self.pager = Pager()
         self.pager.addPage(self.startPage)
-        self.pager.addPage(self.bootloaderPage)
-        self.pager.addPage(self.firmwarePage)
+        self.pager.addPage(self.testPage)
         self.pager.addPage(self.endPage)
 
         # main controls
@@ -97,6 +75,58 @@ class Programmer(QMainWindow):
         self.center()
         self.show()
         #self.setFixedSize(self.size())
+
+    # smartdrive test stand functions
+    def initIO(self):
+        PWM.cleanup()
+
+        # set up eQEP2 encoder for position feedback
+        self.encoder = RotaryEncoder(eQEP2)
+        print('Encoder enabled  ', self.encoder.enabled)
+        print('Encoder frequency', self.encoder.frequency)
+        print('Encoder position ', self.encoder.position)
+        self.encoder.zero()
+
+        # set up P8.13 PWM for Solenoid control
+        self.solenoidPWM = "P8_13"
+        # make sure it's not running
+        PWM.stop(self.solenoidPWM)
+
+        # set up P9.16 PWM for particle brake control
+        self.particlePWM = "P9_16"
+        PWM.start(self.particlePWM, 0, 2000, 0)
+
+        # set up PX.YY ADC for particle brake current reading
+        self.particleADC = "P9_36"
+        ADC.setup()
+        sense = ADC.read(self.particleADC)
+        print('Particle current percentage:', sense)
+
+        # wire up UI to IO functions
+        self.testPage.doubleTap.connect(self.doubleTap)
+        self.testPage.setLoadPercent.connect(self.setLoadPercent)
+        self.readParticleLoad.connect(self.testPage.updateParticleLoad)
+
+        # start timer for reading particle brake load
+        self.adcTimer = QTimer()
+        self.adcTimer.timeout.connect(self.adcReadTimeout)
+        self.adcTimer.start(500)
+
+    @pyqtSlot()
+    def doubleTap(self):
+        # start pwm at freq of 2 Hz
+        PWM.start(self.solenoidPWM, 10, 2, 0)
+        # create one-shot timer for canceling the pwm
+        QTimer.singleShot(900, lambda : PWM.stop(self.solenoidPWM))
+
+    @pyqtSlot(int)
+    def setLoadPercent(self, percent):
+        PWM.set_duty_cycle(self.particlePWM, percent)
+
+    @pyqtSlot()
+    def adcReadTimeout(self):
+        sense = ADC.read(self.particleADC)
+        self.readParticleLoad.emit(sense)
 
     # general functions
     def about(self):
