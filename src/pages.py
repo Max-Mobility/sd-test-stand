@@ -86,6 +86,8 @@ class TestPage(BasePage):
         self.increaseLoadButton.clicked.connect(self.increaseLoad)
         self.decreaseLoadButton = QPushButton("Decrease Load")
         self.decreaseLoadButton.clicked.connect(self.decreaseLoad)
+        self.zeroLoadButton = QPushButton("Zero Load")
+        self.zeroLoadButton.clicked.connect(self.zeroLoad)
         self.doubleTapButton = QPushButton("Double Tap")
         self.doubleTapButton.clicked.connect(self.performDoubleTap)
 
@@ -93,12 +95,14 @@ class TestPage(BasePage):
                        self.progressBar,
                        self.increaseLoadButton,
                        self.decreaseLoadButton,
+                       self.zeroLoadButton,
                        self.doubleTapButton]
 
         self.layout.addWidget(title)
         self.layout.addWidget(self.progressBar)
         self.layout.addWidget(self.increaseLoadButton)
         self.layout.addWidget(self.decreaseLoadButton)
+        self.layout.addWidget(self.zeroLoadButton)
         self.layout.addWidget(self.doubleTapButton)
 
     @pyqtSlot()
@@ -117,9 +121,15 @@ class TestPage(BasePage):
         if self.load < 0: self.load = 0
         self.setLoadPercent.emit(self.load)
 
+    @pyqtSlot()
+    def zeroLoad(self):
+        self.load = 0
+        self.setLoadPercent.emit(self.load)
+
     @pyqtSlot(float)
     def updateParticleLoad(self, percent):
-        self.progressBar.setProgress(percent, "Particle brake load: {0:.2f}%".format(percent*100))
+        percent = percent*100
+        self.progressBar.setProgress(percent, "Particle brake load: {0:.2f} %".format(percent))
 
 
 class EndPage(BasePage):

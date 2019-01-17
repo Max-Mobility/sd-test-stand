@@ -114,8 +114,10 @@ class Programmer(QMainWindow):
 
     @pyqtSlot()
     def doubleTap(self):
+        # stop the PWM if it's running
+        PWM.stop(self.solenoidPWM)
         # start pwm at freq of 2 Hz
-        PWM.start(self.solenoidPWM, 10, 2, 0)
+        PWM.start(self.solenoidPWM, 30, 3, 0)
         # create one-shot timer for canceling the pwm
         QTimer.singleShot(900, lambda : PWM.stop(self.solenoidPWM))
 
