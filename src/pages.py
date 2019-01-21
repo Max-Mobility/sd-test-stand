@@ -110,8 +110,10 @@ class TestPage(BasePage):
 
     @pyqtSlot(float)
     def updateQepSpeed(self, speed):
-        mph = (24.5 * 3600 / (12.0 * 5280.0)) * speed / 4000
-        self.speedLabel.setText("QEP Speed: {0:.2f} mph".format(speed))
+        mph = (24.5 * speed / 4000.0) # inches per second
+        mph = mph / 12.0 / 5280.0 # miles per second
+        mph = mph * 60 * 60 # miles per hour
+        self.speedLabel.setText("QEP Speed: {0:.2f} mph".format(mph))
 
     @pyqtSlot()
     def performDoubleTap(self):
