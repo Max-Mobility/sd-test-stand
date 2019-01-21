@@ -18,6 +18,7 @@ from Adafruit_BBIO.Encoder import RotaryEncoder, eQEP2
 
 class Programmer(QMainWindow):
     readParticleLoad = pyqtSignal(float)
+    qepSpeedUpdate = pyqtSignal(float)
 
     def __init__(self):
         super().__init__()
@@ -82,10 +83,11 @@ class Programmer(QMainWindow):
 
         # set up eQEP2 encoder for position feedback
         self.encoder = RotaryEncoder(eQEP2)
+        self.encoder.enable()
+        self.encoder.zero()
         print('Encoder enabled  ', self.encoder.enabled)
         print('Encoder frequency', self.encoder.frequency)
         print('Encoder position ', self.encoder.position)
-        self.encoder.zero()
 
         # set up P8.13 PWM for Solenoid control
         self.solenoidPWM = "P8_13"
@@ -111,6 +113,22 @@ class Programmer(QMainWindow):
         self.adcTimer = QTimer()
         self.adcTimer.timeout.connect(self.adcReadTimeout)
         self.adcTimer.start(500)
+
+        # start timer for measuring velocity of encoder
+        self.qepTimer = QTimer()
+        self.qepTimer.timeout.connect(self.measureQEPSpeed)
+        self.qepSpeedUpdate.connect(self.testPage.updateQepSpeed)
+        self.lastEncoderPosition = self.encoder.position
+        self.qepTime = 1.0
+        self.qepTimer.start(self.qepTime * 1000)
+
+    @pyqtSlot()
+    def measureQEPSpeed(self):
+        position = self.encoder.position
+        diff = position - self.lastEncoderPosition
+        self.lastEncoderPosition = position
+        self.qepSpeed = diff / self.qepTime
+        self.qepSpeedUpdate.emit(self.qepSpeed)
 
     @pyqtSlot()
     def doubleTap(self):

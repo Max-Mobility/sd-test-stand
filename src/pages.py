@@ -81,6 +81,7 @@ class TestPage(BasePage):
         self.setLoadPercent.emit(self.load)
 
         title = QLabel("Test Controls")
+        self.speedLabel = QLabel("QEP Speed: 0 mph")
         self.progressBar = ProgressBar()
         self.increaseLoadButton = QPushButton("Increase Load")
         self.increaseLoadButton.clicked.connect(self.increaseLoad)
@@ -92,6 +93,7 @@ class TestPage(BasePage):
         self.doubleTapButton.clicked.connect(self.performDoubleTap)
 
         self.labels = [title,
+                       self.speedLabel,
                        self.progressBar,
                        self.increaseLoadButton,
                        self.decreaseLoadButton,
@@ -99,11 +101,17 @@ class TestPage(BasePage):
                        self.doubleTapButton]
 
         self.layout.addWidget(title)
+        self.layout.addWidget(self.speedLabel)
         self.layout.addWidget(self.progressBar)
         self.layout.addWidget(self.increaseLoadButton)
         self.layout.addWidget(self.decreaseLoadButton)
         self.layout.addWidget(self.zeroLoadButton)
         self.layout.addWidget(self.doubleTapButton)
+
+    @pyqtSlot(float)
+    def updateQepSpeed(self, speed):
+        mph = (24.5 * 3600 / (12.0 * 5280.0)) * speed / 4000
+        self.speedLabel.setText("QEP Speed: {0:.2f} mph".format(speed))
 
     @pyqtSlot()
     def performDoubleTap(self):
